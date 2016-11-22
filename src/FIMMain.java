@@ -124,11 +124,21 @@ public class FIMMain {
 					break;
 					
 				}
+				ResultSet rset=stat1.executeQuery("select quantity from feed where animalid='"+animalID+"'");
+				Double currQuantity=0.0;
+				while(rset.next())
+				{
+					currQuantity= rset.getDouble(1);
+										
+				}
 				
 				System.out.println("Enter quantity to be fed:\n");
 				double quantityFed=Double.parseDouble(br.readLine());
-				java.sql.Timestamp tstamp= getCurrentTimeStamp();
 				
+				java.sql.Timestamp tstamp= getCurrentTimeStamp();
+				if (currQuantity< quantityFed ){
+					quantityFed= currQuantity;
+				}
 				String sql="insert into recordfeeding(animalId, quantiyfed, timeFed) values (?,?,?)";
 				PreparedStatement ps=conn.prepareStatement(sql);
 				ps.setInt(1, animalID);
@@ -138,13 +148,7 @@ public class FIMMain {
 				
 				
 				// update the quantity in the current feed
-				ResultSet rset=stat1.executeQuery("select quantity from feed where animalid='"+animalID+"'");
-				Double currQuantity=Double.MIN_VALUE;
-				while(rset.next())
-				{
-					currQuantity= rs1.getDouble(1);
-										
-				}
+				
 				String sql1="update feed set quantity = ? "
 		                  + "where animalid='"+animalID+"'";
 				PreparedStatement psupdate=conn.prepareStatement(sql1);
@@ -200,6 +204,8 @@ public class FIMMain {
 		}
 		
 	}
+	
+	
 	private static java.sql.Timestamp getCurrentTimeStamp() {
 
 		java.util.Date today = new java.util.Date();
