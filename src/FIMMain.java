@@ -81,12 +81,35 @@ public class FIMMain {
 					else if(quantity==Integer.MIN_VALUE)
 					{
 						//Not exists!! Insert query
+						
+						String sql="insert into feed(zooid, animalid, quantity) values (?,?,?)";
+						PreparedStatement ps=conn.prepareStatement(sql);
+						ps.setInt(1, zooId);
+						ps.setInt(2, animalId);
+						ps.setDouble(3, newQuantity);
+						ps.executeUpdate();
 					}
 					else
 					{
 						//exists and not waste!! update query
+						String sql1="update feed set quantity = ? "
+				                  + "where zooid='"+zooId+"' and animalid='"+animalId+"'";
+						PreparedStatement ps1=conn.prepareStatement(sql1);
+						ps1.setDouble(1, newQuantity);
+						
+
 						// execute update SQL stetement
+						ps1.executeUpdate();
+						
 					}
+					break;
+				case "2":
+					break;
+				case "3":
+					break;
+				case "4":
+					System.exit(0);
+				
 			}
 		}
 	}
