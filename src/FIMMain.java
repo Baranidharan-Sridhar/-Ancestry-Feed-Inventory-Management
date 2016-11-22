@@ -104,6 +104,38 @@ public class FIMMain {
 					}
 					break;
 				case "2":
+					conn=SingletonConnection.getConnection();
+					
+					System.out.println("Enter Animal to be Fed: \n");
+					String animal=br.readLine().toString();
+					Statement stat1=conn.createStatement();
+					ResultSet rs1=stat1.executeQuery("select animalID, count(animalID) from animal where animalSpecies='"+animal+"'");
+					int animalID=Integer.MIN_VALUE;
+					int count=-1;
+					while(rs1.next())
+					{
+						animalID= rs1.getInt(1);
+						count= rs1.getInt(2);
+						
+					}
+					if(count==0){
+						System.err.println("Enter valid animal name to feed");
+						break;
+						
+					}
+					
+					System.out.println("Enter quantity to be fed:\n");
+					double quantityFed=Double.parseDouble(br.readLine());
+					java.sql.Timestamp tstamp= getCurrentTimeStamp();
+					
+					String sql="insert into recordfeeding(animalId, quantiyfed, timeFed) values (?,?,?)";
+					PreparedStatement ps=conn.prepareStatement(sql);
+					ps.setInt(1, animalID);
+					ps.setDouble(2, quantityFed);
+					ps.setTimestamp(3, tstamp);
+					ps.executeUpdate();
+					
+				
 					break;
 				case "3":
 					break;
@@ -112,5 +144,11 @@ public class FIMMain {
 				
 			}
 		}
+	}
+	private static java.sql.Timestamp getCurrentTimeStamp() {
+
+		java.util.Date today = new java.util.Date();
+		return new java.sql.Timestamp(today.getTime());
+
 	}
 }
